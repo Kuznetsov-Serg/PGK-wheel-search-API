@@ -1,0 +1,117 @@
+[tool.poetry]
+name = "wheel_search_api"
+version = "0.1.0"
+description = "Search for wheelsets (a project for the security service)"
+authors = ["Sergey Kuznetsov <KuznetsovSN@pgk.ru>"]
+packages = [
+    { include = "app" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.79.0"
+uvicorn = "^0.17.4"
+gunicorn = "^20.1.0"
+fastapi-viewsets = "<1.0.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+cryptography = "^3.4.8"
+requests = "^2.26.0"
+orjson = "^3.6.6"
+pydantic = {extras = ["dotenv"], version = "^1.8.2"}
+sentry-sdk = "^1.5.4"
+SQLAlchemy = "^1.4.25"
+click = "^8.0.2"
+cx-oracle = "^8.3.0"
+openpyxl = "^3.0.10"
+python-multipart = "^0.0.5"
+aiofiles = "^0.8.0"
+alembic = "^1.8.1"
+python-json-logger = "^2.0.4"
+seaborn = "^0.11.2"
+xlsxwriter = "^3.0.3"
+chardet = "^5.0.0"
+psycopg2-binary = "^2.9.3"
+PyYAML = "^6.0"
+jinja2 = "^3.1.2"
+passlib = "^1.7.4"
+bcrypt = "^4.0.0"
+python-levenshtein = "^0.20.7"
+fuzzywuzzy = "^0.18.0"
+#starlette-validation-uploadfile = "^0.1.1"
+asgi-ratelimit = "^0.10.0"
+loguru = "^0.7.3"
+win32-setctime = "^1.2.0"
+swifter = "^1.4.0"
+pandas = "^2.3.1"
+python-ldap = "^3.4.4"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-cov = {extras = ["toml"], version = "^3.0.0"}
+
+ [tool.poetry.group.test.dependencies]
+ pytest = "^7.1.2"
+ pytest-cov = {extras = ["toml"], version = "^3.0.0"}
+
+# [tool.poetry.group.tools.dependencies]
+# pre-commit = "^2.17.0"
+# black = "^22.3.0"
+# isort = "^5.12.0"
+# mypy = "^0.942"
+# pylint = "2.11.1"
+# pyupgrade = "^2.37.3"
+# autoflake = "^1.4"
+#pre-commit = "^2.20.0"
+
+[tool.poetry.scripts]
+server = "main:start_uvicorn"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.2.0"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip_gitignore = true
+py_version = "auto"
+
+[tool.pytest.ini_options]
+addopts = '''
+  --strict-markers
+  --cov=app
+  --cov=tests
+  --cov-report=term-missing
+  --cov-report=html
+  --no-cov-on-fail
+'''
+
+[tool.coverage.paths]
+source = ["app", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+skip_empty = true
+fail_under = 80
+omit = ["app/utils/*", "app/core/*"]
+
+# [[tool.poetry.source]]
+# name = "pgk"
+# url = "https://nexus.pgk.ru/repository/pypi-group/simple/"
+# default = true
+#
+# [[tool.poetry.source]]
+# name = "pgk_local"
+# url = "https://nexus.pgk.ru/repository/pypi-local/"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

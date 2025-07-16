@@ -1,0 +1,22 @@
+.base_deploy:
+  stage: deploy
+  tags:
+    - deploy_test
+  image: gitlab.pgkweb.ru:4567/oks/custom-images/alpine-custom:latest
+  before_script:
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$DEPLOY_USER"
+    - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add - > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOY_SERVER
+    - ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/known_hosts
+    - export PROJECT_VERSION=$(grep version pyproject.toml | head -1 | sed s'/"//g' | awk '{print $3}')
+    - echo "deploy the $PROJECT_VERSION version..."
+
+  script:
+    - ssh $JOB_DEPLOY_USER@JOB_DEPLOY_SERVER "docker service update --force --image $CI_REGISTRY_IMAGE:$PROJECT_ENVIRONMENT$PROJECT_VERSION ${PROJECT_NAME}"
+  after_script:
+    - echo "Successful deploy $CI_REGISTRY_IMAGE:$PROJECT_ENVIRONMENT$PROJECT_VERSION to the swarm '${PROJECT_NAME}' service"

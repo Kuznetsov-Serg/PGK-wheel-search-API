@@ -1,0 +1,3 @@
+include:
+  - project: digital-platform/dp-templates/dp-include
+    file: teams/poc/$CI_PROJECT_NAME.yml

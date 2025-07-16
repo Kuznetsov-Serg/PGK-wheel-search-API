@@ -1,0 +1,23 @@
+.base_test:
+  stage: test
+  tags:
+    - test
+  services:
+    - gitlab.pgkweb.ru:4567/oks/custom-images/docker:18-dind
+  image: gitlab.pgkweb.ru:4567/oks/custom-images/python:oracle
+  before_script:
+    - pip install poetry
+    - poetry config virtualenvs.create false
+    - poetry update
+    - cp ./deploy/.env.copy .env
+  script:
+    - echo "run coverage report..."
+    - poetry run coverage run -m pytest -o junit_family=xunit2 --junitxml=report.xml
+    - poetry run coverage report
+    - poetry run coverage xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+      cobertura: coverage.xml
+  coverage: '/^TOTAL.+?(\d+\%)$/'

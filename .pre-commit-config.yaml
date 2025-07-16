@@ -1,0 +1,71 @@
+repos:
+  # default built-in pre-commit hooks
+  - repo: git@gitlab.pgkweb.ru:pycqa/forks/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: check-docstring-first
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+      - id: check-executables-have-shebangs
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+      - id: debug-statements
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+      - id: end-of-file-fixer
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+      - id: trailing-whitespace
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+      - id: mixed-line-ending
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+
+  # sorting imports
+#  - repo: git@gitlab.pgkweb.ru:pycqa/forks/isort
+#    rev: 5.12.0
+#    hooks:
+#      - id: isort
+#        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+#        args: [ "--profile", "black" ]
+  #        types: [ cython ]
+
+  # update python code to the "arg" version, use either --py38-plus or --py39-plus
+  - repo: git@gitlab.pgkweb.ru:pycqa/forks/pyupgrade
+    rev: v2.31.0
+    hooks:
+      - id: pyupgrade
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+        args: [ --py39-plus ]
+
+  # remove unused imports
+  - repo: git@gitlab.pgkweb.ru:pycqa/forks/autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+        args: [ --in-place, --remove-all-unused-imports ]
+
+ # python code formatter
+#  - repo: git@gitlab.pgkweb.ru:pycqa/forks/black
+#    rev: 22.1.0
+#    hooks:
+#      - id: black
+#        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+#        language_version: python3 # Should be a command that runs python3.6+
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
+    hooks:
+      - id: black
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+        language_version: python3 # Should be a command that runs python3.6+
+
+    # linter with provided config, 7 is the fail threshold
+  - repo: git@gitlab.pgkweb.ru:pycqa/forks/pylint
+    rev: v2.12.2
+    hooks:
+      - id: pylint
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+        args: [ --rcfile=pylintrc, --fail-under=7 ]
+    # commit message validation
+  - repo: git@gitlab.pgkweb.ru:pycqa/forks/commitizen
+    rev: v2.20.5
+    hooks:
+      - id: commitizen
+        additional_dependencies: [ --index-url=http://nexus.pgk.ru/repository/pypi-group/simple/, --trusted-host=nexus.pgk.ru ]
+        stages: [ commit-msg ]

@@ -1,0 +1,30 @@
+.base_build:
+  stage: build
+  tags:
+    - build
+  variables:
+    DOCKER_DRIVER: overlay2
+  services:
+    - gitlab.pgkweb.ru:4567/oks/custom-images/docker:18-dind
+  image: gitlab.pgkweb.ru:4567/oks/custom-images/docker:18-git
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    # generate project version variable from pyproject.toml file
+    - export PROJECT_VERSION=$(grep version pyproject.toml | head -1 | sed s'/"//g' | awk '{print $3}')
+    - echo "building the $PROJECT_VERSION version..."
+  script:
+    - echo "building $CI_REGISTRY_IMAGE:$PROJECT_ENVIRONMENT$PROJECT_VERSION..."
+    - docker build --rm -t $CI_REGISTRY_IMAGE:$PROJECT_ENVIRONMENT$PROJECT_VERSION
+      --build-arg PROJECT_ENVIRONMENT=${PROJECT_ENVIRONMENT}
+      --build-arg PROJECT_NAME=${PROJECT_NAME}
+      --build-arg PROJECT_VERSION=${PROJECT_VERSION}
+      --build-arg DB_HOST=${DB_HOST}
+      --build-arg DB_USER=${DB_USER}
+      --build-arg DB_PASSWORD=${DB_PASSWORD}
+      --build-arg DB_NAME=${DB_NAME}
+      --build-arg REDIS=${REDIS}
+      --build-arg REDIS_HOST=${REDIS_HOST}
+      .
+    - docker push $CI_REGISTRY_IMAGE:$PROJECT_ENVIRONMENT$PROJECT_VERSION
+  after_script:
+    - echo "Successful build $CI_REGISTRY_IMAGE:$PROJECT_ENVIRONMENT$PROJECT_VERSION"

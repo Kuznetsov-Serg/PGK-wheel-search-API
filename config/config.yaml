@@ -1,0 +1,98 @@
+project_name: ${PROJECT_NAME}
+project_version: ${PROJECT_VERSION}
+project_environment: ${PROJECT_ENVIRONMENT}
+gzip_minimums_size: ${GZIP_MINIMUMS_SIZE}
+backend_cors_origins: ["http://localhost:8000", "http://localhost:4208", "http://127.0.0.1:4208", "https://127.0.0.1:4208", "https://localhost:8000", "http://localhost", "https://localhost"]
+api_prefix: ${API_PREFIX}
+
+is_https: ${IS_HTTPS}
+is_authorise_by_token: ${IS_AUTHORISE_BY_TOKEN}
+is_authorise_by_role: ${IS_AUTHORISE_BY_ROLE}
+
+rate_limit:
+  is_enable: True
+  second: 10
+  minute: 100
+#  is_enable: ${RATE_LIMIT_IS_ENABLE}
+#  second: ${RATE_LIMIT_SECOND}
+#  minute: ${RATE_LIMIT_MINUTE}
+
+is_sentry: ${SENTRY}
+sentry_dsn: ${SENTRY_DSN}
+
+is_log_crud_change: ${IS_LOG_CRUD_CHANGE}
+is_log_crud_all: ${IS_LOG_CRUD_ALL}
+
+database:
+  dsn: ${DATABASE_DSN}
+  db_host: ${DATABASE_DB_HOST}
+  db_port: ${DATABASE_DB_PORT}
+  db_user: ${DATABASE_DB_USER}
+  db_pass: ${DATABASE_DB_PASS}
+  db_name: ${DATABASE_DB_NAME}
+
+database_ora:
+  dsn: ${DB_ORA_DSN}
+  db_host: ${DB_ORA_HOST}
+  db_port: ${DB_ORA_PORT}
+  db_user: ${DB_ORA_USER}
+  db_pass: ${DB_ORA_PASS}
+  db_name: ${DB_ORA_NAME}
+
+server:
+  host: ${SERVER_HOST}
+  port: ${SERVER_PORT}
+  workers: ${SERVER_WORKERS}
+#  root_url: '127.0.0.1:9980'
+#  minio_external_url: '127.0.0.7:9000'
+#  registration_route: '/api/users/confirm/'
+#  pass_confirm_route: '/api/account/restore/confirm/'
+#  bid_item_route: '/supplier/bids/'
+
+ad_authorize:
+  is_enable: ${IS_AD_RESTRICTION}
+#  user: ${AD_USER}
+#  password: ${AD_PASSWORD}
+  user_group: ${AD_USER_GROUP}
+  admin_group: ${AD_ADMIN_GROUP}
+  security_admin_group: ${AD_SECURITY_ADMIN_GROUP}
+
+jwt:
+  jwt_secret: ${JWT_SECRET}
+  jwt_algorithm: ${JWT_ALGORITHM}
+  jwt_access_token_days: ${JWT_ACCESS_TOKEN_DAYS}
+
+ldap_server: ${LDAP_SERVER}
+
+fail_login_try: ${FAIL_LOGIN_TRY}
+fail_login_period_block: ${FAIL_LOGIN_PERIOD_BLOCK}
+
+logging:
+  version: 1
+  disable_existing_loggers: true
+  formatters:
+    json:
+      "()": pythonjsonlogger.jsonlogger.JsonFormatter
+      format: "%(message)s%(name)"
+      timestamp: true
+  handlers:
+    default:
+      formatter: json
+      class: logging.StreamHandler
+      stream: ext://sys.stderr
+    access:
+      formatter: json
+      class: logging.StreamHandler
+      stream: ext://sys.stdout
+  loggers:
+    '':
+      handlers:
+      - default
+      level: INFO
+    uvicorn.error:
+      level: INFO
+    uvicorn.access:
+      handlers:
+      - access
+      level: INFO
+      propagate: false
